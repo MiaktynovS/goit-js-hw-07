@@ -3,14 +3,12 @@ import { galleryItems } from './gallery-items.js';
 
 console.log(galleryItems);
 
-console.log(createImagesMarkup(galleryItems));
+// console.log(createImagesMarkup(galleryItems));
 
 const galleryMarkup = document.querySelector('.gallery');
 const imagesMarkup = createImagesMarkup(galleryItems);
 
-galleryMarkup.insertAdjacentHTML('beforeend', imagesMarkup);
-
-function createImagesMarkup(galleryItems) {
+function createImagesMarkup() {
     return galleryItems.map(({ preview, original, description }) => {
      return`<div class="gallery__item">
         <a class="gallery__link" href="${original}">
@@ -22,10 +20,32 @@ function createImagesMarkup(galleryItems) {
           />
         </a>
       </div>`;
-     }).join("")
-  
+     }).join("")  
 }
-// const galleryEl = document.querySelector('.gallery');
-// console.log(galleryEl);
 
-// galleryEl.append(...galleryItems);
+galleryMarkup.insertAdjacentHTML('beforeend', imagesMarkup);
+
+galleryMarkup.addEventListener('click', onImageClick);
+
+function onImageClick(evt) {
+  evt.preventDefault();
+
+  if (evt.target.nodeName !== "IMG") {
+    return;
+  }
+
+  const instance = basicLightbox.create(`
+    <img src="${evt.target.dataset.source}" width="800" height="600">
+`)
+
+instance.show()
+
+  galleryMarkup.addEventListener('keydown', (evt) => {
+    if(evt.code === "Escape"){
+    instance.close()
+  }
+})
+
+}
+
+
